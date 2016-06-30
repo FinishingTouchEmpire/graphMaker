@@ -25,23 +25,31 @@ module.exports = function (app, express) {
   app.post('/api/graph', function (req, res) {
     var query = req.body.search;
 
-    request('https://json.reddit.com/search?q=' + query + '&sort=hot&limit=100', function(error, response, body) {
+    request('http://api.undata-api.org/UNSD/Environment%20Statistics%20Database/Precipitation/United%20Kingdom/records?app_id=b77582b5&app_key=524b5dfcab8cfef9500afd34f73fb855', function(error, response, body) {
       if (error) {
         console.log('Something went wrong with reddit', error);
         res.send(error);
       } else {
-        var body = JSON.parse(body);
-        console.log('Something went wrong with reddit', body.data.children);
-        //send off the results
-        var info = body.data.children;
-        var key1 = 'created_utc';
-        var key2 = 'subreddit';
-        var graph = graphMaker(info, key1, key2);
-        // cy = cytoscape(graph);
 
-        res.send(graph);
+        var body = JSON.parse(body);
+        var ukBody = body;
+        request('http://api.undata-api.org/UNSD/Environment%20Statistics%20Database/Precipitation/Colombia/records?app_id=b77582b5&app_key=524b5dfcab8cfef9500afd34f73fb855', function(error, response, body) {
+
+          //send off the results
+          var body = JSON.parse(body);
+
+          var info = body.concat(ukBody);
+          // res.send(info)
+          console.log('Something went wrong with reddit', info);
+          var key1 = 'value';
+          var key2 = 'year';
+          var graph = graphMaker(info, key1, key2);
+          // cy = cytoscape(graph);
+          res.send(graph);
+        });
         
       }
+      // res.send(body);
     });
 
 

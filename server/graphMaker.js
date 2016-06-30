@@ -7,18 +7,41 @@ var graphMaker = function(data, key1, key2) {
 
   //iterate through data - should be array of objects
   for (var i = 0; i < data.length; i++) {
-    var mainValue = data[i].data[key1] * 1000;
-    day = new Date(mainValue);
-    day = day.getDay();
-    var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    mainValue = dayNames[day];
-    var otherValue = data[i].data[key2];
+    var mainValue = data[i][key1];
+    if (mainValue > 280000) {
+      mainValue = 'greater than 280000';
+      var size = 'big';
+      var weight = 100;
+    } else if (mainValue < 280000 && mainValue < 240000){
+      mainValue = 'between 240000 and 280000';
+      var size = 'med';
+      var weight = 50;
+
+      
+    } else {
+      mainValue = 'less than 240000';
+      var size = 'small';
+      var weight = 0;
+
+
+      
+
+    }
+    // }
+    // day = new Date(mainValue);
+    // day = day.getDay();
+    // var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    // mainValue = dayNames[day];
+    var otherValue = data[i][key2];
 
     //template obj for main node
     var node = {
       'group': 'nodes',
       'data' : {
-        'id': mainValue
+        'id': mainValue,
+        'class' : size,
+        'label' : size,
+        'foo': weight
       }
     };
 
@@ -32,7 +55,7 @@ var graphMaker = function(data, key1, key2) {
     //template obj for edge
     var edge = {
       'data': {
-        'id': mainValue + otherValue,
+        'id': mainValue + otherValue + i,
         'source': mainValue,
         'target': otherValue
       }
